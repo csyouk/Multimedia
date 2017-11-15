@@ -8,6 +8,8 @@
 
 #define FB_NUM0	0
 #define FB_NUM1	1
+#define FB_NUM2	2
+#define FB_NUM3	3
 
 #define APP_NAME "fbtest"
 #define app_info(...) {printf(APP_NAME" info: "); printf(__VA_ARGS__);}
@@ -79,7 +81,7 @@ int main(void)
 		exit(-1);
 	}
 	/* FB_NUM0: get fb_var_screeninfo */
-	// ioctl. IO를 제어 하는 함수.
+	// ioctl. IO를 제어 하는 함수. 장치에 대한 설정을 하는 함수.
 	if (ioctl(fd_fb0, FBIOGET_VSCREENINFO, &vinfo) == -1) {
 		app_err("cannot read FBIOGET_VSCREENINFO\n");
 		exit(-1);
@@ -92,6 +94,7 @@ int main(void)
 	app_info("%s was opened successfully\n", temp_buf);
 	app_info("%dx%d, %dbpp\n", vinfo.xres, vinfo.yres, vinfo.bits_per_pixel);
 	/* FB_NUM0: mmap */
+	// vinfo에 xres, yres의 정보를 가져옴. 프레임 버퍼의 주소공간 크기를 가져옴.
 	size_fb0 = vinfo.xres * vinfo.yres * vinfo.bits_per_pixel / 8;
 	map_fb0 = (char *)mmap(0, size_fb0, PROT_READ | PROT_WRITE, MAP_SHARED, fd_fb0, 0);
 	if ((int)map_fb0 == -1) {
@@ -148,6 +151,8 @@ int main(void)
 	/* FB_NUM1: draw rectangle */
 	draw_rect(vinfo.xoffset, vinfo.yoffset, vinfo.xres, vinfo.yres, COLOR_BLACK, &vinfo, &finfo, map_fb1);
 	draw_rect(250, 90, 150, 150, COLOR_BLUE|0x80000000, &vinfo, &finfo, map_fb1);
+
+
 
 	/* wait */
 	printf("Sleeping 5 seconds\n");
