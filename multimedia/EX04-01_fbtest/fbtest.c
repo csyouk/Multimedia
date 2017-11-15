@@ -35,6 +35,7 @@ int draw_rect(int x, int y, int w, int h, unsigned long color, struct fb_var_scr
 	int xx, yy;
 	long location = 0;
 
+	// 만약 이 부분을 mmap이 아닌 write를 통해서 그리려고 했다면?
 	for(yy = y; yy < (y+h); yy++) {
 		for(xx = x; xx < (x+w); xx++) {
 			location = (xx+vip->xoffset) * (vip->bits_per_pixel/8) +
@@ -43,6 +44,30 @@ int draw_rect(int x, int y, int w, int h, unsigned long color, struct fb_var_scr
 				*(unsigned long *)(map + location) = color;
 			} else  { /* 16bpp */
 				*(unsigned short *)(map + location) = (unsigned short)color;
+			}
+		}
+	}
+
+	return 0;
+}
+
+int draw_rect2(int x, int y, int w, int h, unsigned long color,
+	struct fb_var_screeninfo *vip, struct fb_fix_screeninfo *fip, int fd)
+{
+	int xx, yy;
+	off_t location = 0;
+
+	// 만약 이 부분을 mmap이 아닌 write를 통해서 그리려고 했다면?
+	for(yy = y; yy < (y+h); yy++) {
+		for(xx = x; xx < (x+w); xx++) {
+			location = (xx+vip->xoffset) * (vip->bits_per_pixel/8) + (yy+vip->yoffset) * fip->line_length;
+			lseek(fd, location, SEEK_SET);
+			if (vip->bits_per_pixel == 32) {
+				// *(unsigned long *)(map + location) = color;
+				write(fd, (void *)&color, sizeof(unsigned int));
+			} else  { /* 16bpp */
+				// *(unsigned short *)(map + location) = (unsigned short)color;
+				write(fd, (void *)&color, sizeof(unsigned short));
 			}
 		}
 	}
@@ -103,8 +128,12 @@ int main(void)
 	}
 	app_info("%s was mapped to %p\n", temp_buf, map_fb0);
 	/* FB_NUM0: draw rectangle */
-	draw_rect(vinfo.xoffset, vinfo.yoffset, vinfo.xres, vinfo.yres, COLOR_BLACK, &vinfo, &finfo, map_fb0);
-	draw_rect(300, 160, 200, 160, COLOR_RED, &vinfo, &finfo, map_fb0);
+	// draw_rect(vinfo.xoffset, vinfo.yoffset, vinfo.xres, vinfo.yres, COLOR_BLACK, &vinfo, &finfo, map_fb0);
+	// draw_rect(300, 160, 200, 160, COLOR_RED, &vinfo, &finfo, map_fb0);
+
+	// draw rect as lseek() and write()
+	draw_rect(vinfo.xoffset, vinfo.yoffset, vinfo.xres, vinfo.yres, COLOR_BLACK, &vinfo, &finfo, fd_fb0);
+	draw_rect(300, 160, 200, 160, COLOR_RED, &vinfo, &finfo, fd_fb0);
 
 	/* FB_NUM1: open */
 	sprintf(temp_buf, "/dev/fb%d", FB_NUM1);

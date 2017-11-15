@@ -50,8 +50,33 @@ char *map_fb0;
 map_fb0 = (char *)mmap(0, size_fb0, PROT_READ | PROT_WRITE, MAP_SHARED, fd_fb0, 0);
 ```
 - 파일이나 장치를 메모리에 대응시키거나 푼다.
+- 인자
+  - `start` : 0으로 세팅시, 커널이 알아서 설정하게 놔둔다는 뜻.
 - 이러한 함수가 필요한 이유는 무엇인가?
   - 실행중인 프로세스는 커널영역의 메모리에 직접접근하여 장치를 제어하거나 어떤 값을 변경할 수 없다.
   - 무조건 OS커널을 통해서 제어를 해야 하는데, mmap도 이러한 접근방식을 도와주는 함수의 일종이다.
   - mmap이 되어지고 나면, 커널의 도움없이 어플리케이션에서 바로 주소를 접근해서 디바이스에(주변장치) 값을 쓸 수 있다.
 - 멀티미디어를 지원하는 장치들은 `mmap()`의 사용이 빈번하다.
+  - 대용량의 메모리를 write할때 많이 쓴다.
+  
+##### draw_rect()
+- 이 함수는 커널에서 제공하는 함수가 아니라, 사용자가 화면에 그림을 쉽게 그리기 위해 정의된 함수이다.
+
+```c
+int draw_rect(int x, int y, int w, int h, unsigned long color, struct fb_var_screeninfo *vip, struct fb_fix_screeninfo *fip, char *map);
+
+// x지점을 계산하는 식과 y지점을 계산하는 식을 주의깊게 보자.
+location = (xx+vip->xoffset) * (vip->bits_per_pixel/8) + (yy+vip->yoffset) * fip->line_length;
+```
+- 만약 `mmap()` 함수가 아닌 `write()`을 통해서 화면에 그림을 그린다면?
+
+
+#### lseek()
+```c
+#include <sys/types.h>
+#include <unistd.h>
+
+off_t lseek(int fd, off_t offset, int whence);
+```
+- write시킬 지점을 잡아 놓고 시작.
+- 화면에 한 픽셀을 그릴때마다 커널을 거쳐서 위치를 얻고 write를 시키는 흐름을 가지는데, 매우 느리다.
