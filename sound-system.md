@@ -1,5 +1,4 @@
 # Sound Configuration
-
 - [ALSA](https://www.alsa-project.org/main/index.php/Main_Page)란 Advanced Linux Sound Architecture의 약자이다.
   - ALSA 프로젝트의 목표들 가운데 하나는 사운드 카드 하드웨어를 자동으로 구성하고 시스템에 여러 개의 사운드 장치를 멋지게 관리하는 것이다
 
