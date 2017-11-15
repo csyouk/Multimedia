@@ -44,8 +44,15 @@ brw-rw----  1 root    disk      7,   0 11월 14 11:33 loop0
   cd ~/work/alsa
   tar jxvf ~/res/alsa/alsa-lib-1.0.27.2.tar.bz2
   cd alsa-lib-1.0.27.2
-  CC=arm-none-linux-gnueabi-gcc ./configure --host=arm-linux --prefix=/home/user/work/alsa/install/
+  # configure를 통해서 Makefile을 만든다.
+  # 빌드가 필요없는 것들은 configure과정에서 빼버린다.
+  CC=arm-none-linux-gnueabi-gcc ./configure  --host=arm-linux --prefix=/home/user/work/alsa/install/
+  # make 과정에서 에러가 없다면, 최종 실행파일이 만들어진다.
+  # 최종 실행파일은 현재 디렉토리에 생긴다.
   make
+  # make install 에서는 최종 실행파일을 지정해놓은 폴더에 가져다 놓는다.
+  # 여기서 지정해 놓은 폴더는 --prefix부분에서 설정이 된다.
+  # --prefix=/home/user/work/alsa/install/
   make install
   sudo cp -arf ~/work/alsa/install /nfsroot/alsa-lib
   sudo vim /nfsroot/alsa.sh
