@@ -1,7 +1,7 @@
 # Display
 
 #### Frame Buffer
-- LCD에 홤녕르 재생하는 유형의 장치들을 일컫음.
+- LCD에 화면을 재생하는 유형의 장치들을 일컫음.
 - 프레임버퍼 디바이스는 그래픽 하드웨어에 대한 추상화를 제공한다.
   - 파일시스템 입장에서 보면, 일종의 파일.
   - 실행 프로그램의 입장에서 보면, 메모리의 일종으로 접근.
@@ -58,7 +58,7 @@ map_fb0 = (char *)mmap(0, size_fb0, PROT_READ | PROT_WRITE, MAP_SHARED, fd_fb0, 
   - mmap이 되어지고 나면, 커널의 도움없이 어플리케이션에서 바로 주소를 접근해서 디바이스에(주변장치) 값을 쓸 수 있다.
 - 멀티미디어를 지원하는 장치들은 `mmap()`의 사용이 빈번하다.
   - 대용량의 메모리를 write할때 많이 쓴다.
-  
+
 ##### draw_rect()
 - 이 함수는 커널에서 제공하는 함수가 아니라, 사용자가 화면에 그림을 쉽게 그리기 위해 정의된 함수이다.
 
@@ -80,3 +80,14 @@ off_t lseek(int fd, off_t offset, int whence);
 ```
 - write시킬 지점을 잡아 놓고 시작.
 - 화면에 한 픽셀을 그릴때마다 커널을 거쳐서 위치를 얻고 write를 시키는 흐름을 가지는데, 매우 느리다.
+
+
+## mplayer 동영상 플레이어 포팅.
+- `./configure --cc=arm-none-linux-gnueabi-gcc --target=arm-linux --enable-static --prefix=/home/user/work/MPlayer-1.1/install --disable-dvdread --enable-fbdev --disable-mencoder --disable-x11 --disable-sdl`
+  - --enable-static 옵션은 static library를 만든다는 의미이다.
+  - 동영상 플레이어는 **decoder** 라이브러리에 대한 의존성이 있다.
+- **\*.a** : static library
+  - 라이브러리는 빌드하는 프로그램마다 전부 포함된다.
+- **\*.so** : shared object library
+  - ex) `stdio.h, stdlib.h` 등
+  - 라이브러리는 메모리상에 하나만 위치하고, 이를 가져다 쓰는 프로그램들은 라이브러리를 참조해서 가져다 쓴다.
