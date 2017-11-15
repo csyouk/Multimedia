@@ -37,7 +37,7 @@ brw-rw----  1 root    disk      7,   0 11월 14 11:33 loop0
   - **Platform** : 프로세서와 연관된 부분.
   - **Machine** : 코덱과 CPU의존적 코드
 
-
+##### Ubuntu
 ```bash
 <alsa-lib 설치>
   mkdir ~/work/alsa
@@ -57,8 +57,11 @@ brw-rw----  1 root    disk      7,   0 11월 14 11:33 loop0
   sudo cp -arf ~/work/alsa/install /nfsroot/alsa-lib
   sudo vim /nfsroot/alsa.sh
   ==========================================================
+  # 변수 설정 후,
   ALSA_CONFIG_PATH=/mnt/nfs/alsa-lib/share/alsa/alsa.conf
+  # 환경변수로 만듬.
   export ALSA_CONFIG_PATH
+  # Linker 프로그램의 경로를 전부 설정해 놓음.
   LD_LIBRARY_PATH=/mnt/nfs/alsa-lib/lib:/mnt/nfs/alsa-lib/lib/alsa-lib:/mnt/nfs/alsa-lib/lib/alsa-lib/smixer
   export LD_LIBRARY_PATH
   ==========================================================
@@ -69,7 +72,19 @@ brw-rw----  1 root    disk      7,   0 11월 14 11:33 loop0
   cd alsa-utils-1.0.27.2
   CC=arm-none-linux-gnueabi-gcc ./configure --prefix=/home/user/work/alsa/install/ --host=arm-linux --with-alsa-inc-prefix=/home/user/work/alsa/install/include --with-alsa-prefix=/home/user/work/alsa/install/lib --disable-alsamixer --disable-xmlto --disable-nls
   make
+  # 실행파일을 보드로 이동.
   sudo cp aplay/aplay /nfsroot
   sudo cp amixer/amixer /nfsroot
   sudo cp -rf ~/res/test_contents /nfsroot
+```
+
+##### WT4412
+```bash
+cd /mnt/nfs
+# 현재 shell에 alsa.sh의 내용을 적용시킨다.(실행시킴)
+source alsa.sh
+./aplay -l
+# 헤드폰에 좌,우 80%씩 볼륨 설정
+./amixer -c 0 sset 'Headphone',0 80% 80% on
+./aplay -Dhw:0,0 /mnt/nfs/test_contents/test.wav
 ```
