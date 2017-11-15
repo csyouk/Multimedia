@@ -38,6 +38,7 @@ brw-rw----  1 root    disk      7,   0 11월 14 11:33 loop0
   - **Machine** : 코덱과 CPU의존적 코드
 
 ##### Ubuntu
+- [install script](./script.txt)
 ```bash
 <alsa-lib 설치>
   mkdir ~/work/alsa
@@ -88,3 +89,16 @@ source alsa.sh
 ./amixer -c 0 sset 'Headphone',0 80% 80% on
 ./aplay -Dhw:0,0 /mnt/nfs/test_contents/test.wav
 ```
+
+- 일반 wave파일은 용량이 크다 따라서 mp3로 용량을 압축해서 가지고 있는 편이 좋다.
+  - wave파일에 비해서 mp3파일은 용량을 85% 압축할 수 있다.
+  - 대신 mp3파일을 재생시키기 위해서 madplay와 같은 decoder가 필요하다.
+  - 아래 4개의 라이브러리가 필요하다.
+    - *madplay*? : **M**PEG **a**udio **d**ecoder and **player**.
+      - [source](https://github.com/Distrotech/madplay)
+    - *zlib* : 압축 라이브러리 일종.
+      - [source](https://zlib.net/)
+    - *libid3tag* : ID3 tag manipulation library.
+      - [source](https://github.com/markjeee/libid3tag)
+    - *libmad* : libmad is a high-quality MPEG audio decoder capable of 24-bit output.
+      - [source](http://linuxfromscratch.org/blfs/view/systemd/multimedia/libmad.html)

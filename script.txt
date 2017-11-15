@@ -121,14 +121,24 @@ mkdir ~/work/alsa
 cd ~/work/alsa
 tar jxvf ~/res/alsa/alsa-lib-1.0.27.2.tar.bz2
 cd alsa-lib-1.0.27.2
-CC=arm-none-linux-gnueabi-gcc ./configure --host=arm-linux --prefix=/home/user/work/alsa/install/
+# configure를 통해서 Makefile을 만든다.
+# 빌드가 필요없는 것들은 configure과정에서 빼버린다.
+CC=arm-none-linux-gnueabi-gcc ./configure  --host=arm-linux --prefix=/home/user/work/alsa/install/
+# make 과정에서 에러가 없다면, 최종 실행파일이 만들어진다.
+# 최종 실행파일은 현재 디렉토리에 생긴다.
 make
+# make install 에서는 최종 실행파일을 지정해놓은 폴더에 가져다 놓는다.
+# 여기서 지정해 놓은 폴더는 --prefix부분에서 설정이 된다.
+# --prefix=/home/user/work/alsa/install/
 make install
 sudo cp -arf ~/work/alsa/install /nfsroot/alsa-lib
 sudo vim /nfsroot/alsa.sh
 ==========================================================
+# 변수 설정 후,
 ALSA_CONFIG_PATH=/mnt/nfs/alsa-lib/share/alsa/alsa.conf
+# 환경변수로 만듬.
 export ALSA_CONFIG_PATH
+# Linker 프로그램의 경로를 전부 설정해 놓음.
 LD_LIBRARY_PATH=/mnt/nfs/alsa-lib/lib:/mnt/nfs/alsa-lib/lib/alsa-lib:/mnt/nfs/alsa-lib/lib/alsa-lib/smixer
 export LD_LIBRARY_PATH
 ==========================================================
@@ -139,6 +149,7 @@ tar jxvf ~/res/alsa/alsa-utils-1.0.27.2.tar.bz2
 cd alsa-utils-1.0.27.2
 CC=arm-none-linux-gnueabi-gcc ./configure --prefix=/home/user/work/alsa/install/ --host=arm-linux --with-alsa-inc-prefix=/home/user/work/alsa/install/include --with-alsa-prefix=/home/user/work/alsa/install/lib --disable-alsamixer --disable-xmlto --disable-nls
 make
+# 실행파일을 보드로 이동.
 sudo cp aplay/aplay /nfsroot
 sudo cp amixer/amixer /nfsroot
 sudo cp -rf ~/res/test_contents /nfsroot
@@ -150,7 +161,7 @@ source alsa.sh
 ./amixer -c 0 sset 'Headphone',0 80% 80% on
 ./aplay -Dhw:0,0 /mnt/nfs/test_contents/test.wav
 
-<madplay 포팅>
+# <madplay 포팅>
 mkdir ~/work/madplay
 cd ~/work/madplay
 tar zxvf ~/res/madplay/libid3tag-0.15.1b.tar.gz
@@ -162,33 +173,39 @@ export CC=arm-none-linux-gnueabi-gcc
 export CXX=arm-none-linux-gnueabi-gcc
 export CPPFLAGS='-I/home/user/work/madplay/libmad-0.15.1b -I/home/user/work/madplay/libid3tag-0.15.1b -I/home/user/work/madplay/zlib-1.2.2 -I/home/user/work/alsa/install/include'
 export LDFLAGS='-L/home/user/work/madplay/libmad-0.15.1b -L/home/user/work/madplay/libid3tag-0.15.1b -L/home/user/work/madplay/zlib-1.2.2 -L/home/user/work/alsa/install/lib'
+# -I Add the directory dir to the head of the list of directories to be searched for header files.
+# -L 라이브러리 위치를 알려주는 옵션
 
-[build zlib]
+# [build zlib]
 cd ~/work/madplay/zlib-1.2.2
 ./configure
 make
 
-[build libid3tag]
+# [build libid3tag]
 cd ~/work/madplay/libid3tag-0.15.1b
 ./configure --host=arm
 make
 cp .libs/libid3tag.a .
 
-[build libmad]
+# [build libmad]
 cd ~/work/madplay/libmad-0.15.1b/
+# configure에 남아있는 내용을 제거시키는 명령
+# sed는 프로그램이다.
+# sed는 stream filter 이다.
 sed -i -e '/fforce-mem/d' configure
 ./configure --host=arm
 make
 cp .libs/libmad.a .
 
-[build madplay]
+# [build madplay]
 cd ~/work/madplay/madplay-0.15.2b
 ./configure --host=arm --with-alsa
 make
+# 필요 없는 정보는 벗겨버리고(strip) 바이너리만 남겨 놓음
 arm-none-linux-gnueabi-strip madplay
 sudo cp madplay /nfsroot
 
-[play]
+# [play] - 보드.
 /mnt/nfs/madplay -a -30 --tty-control -v /mnt/nfs/test_contents/test.mp3
 
 [madplay option]
@@ -205,6 +222,7 @@ Makefile:
 	$(HOST_CC) -> gcc
 make
 sudo cp mplayer /nfsroot
+
 
 [target]
 cd /mnt/nfs
