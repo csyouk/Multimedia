@@ -1,0 +1,351 @@
+<패키지 설치>
+sudo apt-get update
+sudo apt-get install vim git-core gnupg flex bison gperf build-essential libc6-dev libncurses5-dev:i386
+sudo apt-get install x11proto-core-dev libx11-dev:i386 libreadline6-dev:i386 g++-multilib mingw32
+sudo apt-get install openjdk-6-jdk tofrodos python-markdown libxml2-utils xsltproc zlib1g-dev:i386
+sudo apt-get install libusb-dev:i386 minicom libesd0-dev valgrind autoconf libtool texinfo
+sudo apt-get install nfs-kernel-server tftpd tftp xinetd
+
+<실습자료 준비>
+cd
+sudo cp -rf /media/sf_share/res .
+sudo chown -R user res
+sudo chgrp -R user res
+
+cd
+mkdir work
+
+<타깃시스템 네트워크 설정>
+setenv gatewayip 192.168.10.1
+setenv ipaddr 192.168.10.3
+setenv netmask 255.255.255.0
+setenv serverip 192.168.10.2
+saveenv
+
+<TFTP 설정>
+sudo mkdir /tftpboot
+sudo chmod 777 /tftpboot
+sudo vim /etc/xinetd.d/tftpd
+==============================================
+service tftp
+{
+        protocol        = udp
+        port            = 69
+        socket_type     = dgram
+        wait            = yes
+        user            = nobody
+        server          = /usr/sbin/in.tftpd
+        server_args     = /tftpboot
+        disable         = no
+}
+==============================================
+sudo /etc/init.d/xinetd restart
+
+<TFTP 테스트>
+cp ~/res/images/zImage /tftpboot
+cp ~/res/images/ext2img.gz /tftpboot
+chmod 777 /tftpboot/zImage
+chmod 777 /tftpboot/ext2img.gz
+
+<U-Boot 설정>
+setenv bootcmd 'tftp 41000000 ext2img.gz;tftp 40008000 zImage;bootm 40008000'
+setenv bootargs 'console=ttySAC1,115200n81'
+saveenv
+
+<bootargs 수정>
+setenv bootargs 'console=ttySAC1,115200n81 root=/dev/ram0 initrd=0x41000000,16M'
+saveenv
+
+<Hello Linux 작성>
+cd ~
+vim Hello_Linux.c
+==============================================
+#include <stdio.h>
+int main(void)
+{
+	printf("Hello Linux!!\n");
+	return 0;
+}
+==============================================
+gcc Hello_Linux.c -o Hello
+ls -l Hello
+file Hello
+
+<크로스 컴파일러 설치>
+cd /opt
+sudo tar xvf ~/res/tools/arm-2009q3-67-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
+sudo vim /etc/profile
+==============================================
+PATH=$PATH:/opt/arm-2009q3/bin
+==============================================
+source /etc/profile
+
+<크로스 컴파일러로 빌드>
+cd
+arm-none-linux-gnueabi-gcc Hello_Linux.c -o Hello_ARM
+file Hello_ARM
+
+<NFS 서버 구축>
+sudo mkdir /nfsroot
+sudo vim /etc/exports
+==============================================
+/nfsroot *(rw,no_root_squash,no_all_squash,async)
+==============================================
+sudo /etc/init.d/nfs-kernel-server restart
+netstat -a | grep nfs
+
+<Hello_ARM 실행>
+sudo cp Hello_ARM /nfsroot
+
+<커널 빌드>
+cd ~/work
+tar zxvf ~/res/linux/linux-3.4.39_yymmdd.tar.gz
+cd linux-3.4.39
+make wt4412_linux_defconfig
+time make zImage
+cp arch/arm/boot/zImage /tftpboot
+
+<루트 파일 시스템 설치>
+cd ~/work
+sudo tar zxvf ~/res/rootfs/myrootfs_yymmdd.tar.gz
+cd myrootfs
+sudo ./mkext2.sh
+cp ext2img.gz /tftpboot
+
+<실습 예제 설치>
+cd ~/work
+tar zxvf ~/res/practice/practice_yymmdd.tar.gz
+
+<alsa-lib 설치>
+mkdir ~/work/alsa
+cd ~/work/alsa
+tar jxvf ~/res/alsa/alsa-lib-1.0.27.2.tar.bz2
+cd alsa-lib-1.0.27.2
+CC=arm-none-linux-gnueabi-gcc ./configure --host=arm-linux --prefix=/home/user/work/alsa/install/
+make
+make install
+sudo cp -arf ~/work/alsa/install /nfsroot/alsa-lib
+sudo vim /nfsroot/alsa.sh
+==========================================================
+ALSA_CONFIG_PATH=/mnt/nfs/alsa-lib/share/alsa/alsa.conf
+export ALSA_CONFIG_PATH
+LD_LIBRARY_PATH=/mnt/nfs/alsa-lib/lib:/mnt/nfs/alsa-lib/lib/alsa-lib:/mnt/nfs/alsa-lib/lib/alsa-lib/smixer
+export LD_LIBRARY_PATH
+==========================================================
+
+<alsa-utils 설치>
+cd ~/work/alsa
+tar jxvf ~/res/alsa/alsa-utils-1.0.27.2.tar.bz2
+cd alsa-utils-1.0.27.2
+CC=arm-none-linux-gnueabi-gcc ./configure --prefix=/home/user/work/alsa/install/ --host=arm-linux --with-alsa-inc-prefix=/home/user/work/alsa/install/include --with-alsa-prefix=/home/user/work/alsa/install/lib --disable-alsamixer --disable-xmlto --disable-nls
+make
+sudo cp aplay/aplay /nfsroot
+sudo cp amixer/amixer /nfsroot
+sudo cp -rf ~/res/test_contents /nfsroot
+
+<alsa 테스트>
+cd /mnt/nfs
+source alsa.sh
+./aplay -l
+./amixer -c 0 sset 'Headphone',0 80% 80% on
+./aplay -Dhw:0,0 /mnt/nfs/test_contents/test.wav
+
+<madplay 포팅>
+mkdir ~/work/madplay
+cd ~/work/madplay
+tar zxvf ~/res/madplay/libid3tag-0.15.1b.tar.gz
+tar zxvf ~/res/madplay/libmad-0.15.1b.tar.gz
+tar zxvf ~/res/madplay/madplay-0.15.2b.tar.gz
+tar zxvf ~/res/madplay/zlib-1.2.2.tar.gz
+
+export CC=arm-none-linux-gnueabi-gcc
+export CXX=arm-none-linux-gnueabi-gcc
+export CPPFLAGS='-I/home/user/work/madplay/libmad-0.15.1b -I/home/user/work/madplay/libid3tag-0.15.1b -I/home/user/work/madplay/zlib-1.2.2 -I/home/user/work/alsa/install/include'
+export LDFLAGS='-L/home/user/work/madplay/libmad-0.15.1b -L/home/user/work/madplay/libid3tag-0.15.1b -L/home/user/work/madplay/zlib-1.2.2 -L/home/user/work/alsa/install/lib'
+
+[build zlib]
+cd ~/work/madplay/zlib-1.2.2
+./configure
+make
+
+[build libid3tag]
+cd ~/work/madplay/libid3tag-0.15.1b
+./configure --host=arm
+make
+cp .libs/libid3tag.a .
+
+[build libmad]
+cd ~/work/madplay/libmad-0.15.1b/
+sed -i -e '/fforce-mem/d' configure
+./configure --host=arm
+make
+cp .libs/libmad.a .
+
+[build madplay]
+cd ~/work/madplay/madplay-0.15.2b
+./configure --host=arm --with-alsa
+make
+arm-none-linux-gnueabi-strip madplay
+sudo cp madplay /nfsroot
+
+[play]
+/mnt/nfs/madplay -a -30 --tty-control -v /mnt/nfs/test_contents/test.mp3
+
+[madplay option]
+-a: volume
+--tty-control: + = volume up, - = volume down, p = pause/play
+-v: verbose
+
+<mplayer 포팅>
+cd ~/work
+tar zxvf ~/res/mplayer/MPlayer-1.1.tar.gz
+cd MPlayer-1.1
+./configure --cc=arm-none-linux-gnueabi-gcc --target=arm-linux --enable-static --prefix=/home/user/work/MPlayer-1.1/install --disable-dvdread --enable-fbdev --disable-mencoder --disable-x11 --disable-sdl
+Makefile:
+	$(HOST_CC) -> gcc
+make
+sudo cp mplayer /nfsroot
+
+[target]
+cd /mnt/nfs
+./mplayer -volume 30 test_contents/test.avi
+
+<v4l2test 실행>
+vivi 실행:
+/mnt/nfs/v4l2test -d /dev/video0 -c 70 -b /dev/fb0
+USB 카메라 실행:
+/mnt/nfs/v4l2test -d /dev/video5 -c 70 -b /dev/fb0
+
+<tslib 설치>
+cd ~/work
+tar jxvf ~/res/tslib/tslib-1.0.tar.bz2
+cd tslib-1.0/
+./autogen.sh
+./configure --prefix=/home/user/work/tslib-1.0/tslib_arm --host=arm-none-linux-gnueabi
+
+config.h:
+    before: #define malloc rpl_malloc
+    after: //#define malloc rpl_malloc
+
+etc/ts.conf:
+    before: # module_raw input
+    after: module_raw input
+
+plugins/input-raw.c:
+    before: (version == EV_VERSION) &&
+    after: //(version == EV_VERSION) &&
+
+make
+make install
+sudo cp -rf tslib_arm /nfsroot
+
+sudo vim /nfsroot/tslib.sh
+==============================================================
+export TSLIB_TSDEVICE=/dev/input/event0
+export TSLIB_CALIBFILE=/mnt/nfs/tslib_arm/etc/pointercal
+export TSLIB_CONFFILE=/mnt/nfs/tslib_arm/etc/ts.conf
+export TSLIB_PLUGINDIR=/mnt/nfs/tslib_arm/lib/ts
+export TSLIB_CONSOLEDEVICE=none
+export TSLIB_FBDEVICE=/dev/fb0
+export LD_LIBRARY_PATH=/mnt/nfs/tslib_arm/lib:$LD_LIBRARY_PATH
+==============================================================
+
+[target]
+source /mnt/nfs/tslib.sh
+/mnt/nfs/tslib_arm/bin/ts_calibrate
+/mnt/nfs/tslib_arm/bin/ts_test
+
+<QT 설치 (처음 설치 시)>
+mkdir ~/work/qt
+cd ~/work/qt
+tar zxvf ~/res/qt/qt-everywhere-opensource-src-4.8.4.tar.gz
+cd qt-everywhere-opensource-src-4.8.4/
+
+vim mkspecs/qws/linux-arm-g++/qmake.conf
+================================================================
+# modifications to g++.conf
+QMAKE_CC                = arm-none-linux-gnueabi-gcc
+QMAKE_CXX               = arm-none-linux-gnueabi-g++
+QMAKE_LINK              = arm-none-linux-gnueabi-g++
+QMAKE_LINK_SHLIB        = arm-none-linux-gnueabi-g++
+
+# modifications to linux.conf
+QMAKE_AR                = arm-none-linux-gnueabi-ar cqs
+QMAKE_OBJCOPY           = arm-none-linux-gnueabi-objcopy
+QMAKE_STRIP             = arm-none-linux-gnueabi-strip
+
+QMAKE_INCDIR = /home/user/work/tslib-1.0/tslib_arm/include
+QMAKE_LIBDIR = /home/user/work/tslib-1.0/tslib_arm/lib
+QMAKE_LFLAGS = -lts
+================================================================
+
+./configure -prefix /home/user/work/qt/qt-everywhere-opensource-src-4.8.4/install -xplatform qws/linux-arm-g++ -qt-kbd-linuxinput -qt-mouse-tslib -qt-gfx-linuxfb -embedded arm -little-endian -no-webkit -no-openssl -no-mmx -no-sse -no-sse2 -no-javascript-jit -no-neon -release -no-largefile -no-accessibility -no-qt3support -qt-zlib -qt-libpng -no-libmng -qt-libjpeg -no-libtiff -no-nis -no-cups -qt-freetype -depths 16,24,32
+
+...
+Type 'c' if you want to use the Commercial Edition.
+Type 'o' if you want to use the Open Source Edition.
+o
+
+Type '3' to view the GNU General Public License version 3.
+Type 'L' to view the Lesser GNU General Public License version 2.1.
+Type 'yes' to accept this license offer.
+Type 'no' to decline this license offer.
+Do you accept the terms of either license? yes
+...
+
+make
+make install
+
+cd ~/work/qt/qt-everywhere-opensource-src-4.8.4/demos/shared
+cp libdemo_shared.a ~/work/qt/qt-everywhere-opensource-src-4.8.4/install/demos/shared
+
+cd /home/user/work/qt/qt-everywhere-opensource-src-4.8.4/install
+sudo mkdir /nfsroot/qt
+sudo cp -rf lib /nfsroot/qt
+sudo cp demos/affine/affine /nfsroot
+
+sudo vim /nfsroot/qt.sh
+========================================================
+export QTDIR=/mnt/nfs/qt
+export LD_LIBRARY_PATH=$QTDIR/lib:$LD_LIBRARY_PATH
+export QWS_MOUSE_PROTO="TSLIB:/dev/input/event0"
+export QWS_KEYBOARD=TTY:/dev/tty1
+export QT_QWS_FONTDIR=/mnt/nfs/qt/lib/fonts
+export POINTERCAL_FILE=/mnt/nfs/tslib_arm/etc/pointercal
+========================================================
+
+[target]
+source /mnt/nfs/tslib.sh
+source /mnt/nfs/qt.sh
+/mnt/nfs/affine -qws
+
+<QT 설치 (미리 빌드된 버전 사용 시)>
+mkdir ~/work/qt
+cd ~/work/qt
+tar zxvf ~/res/solution/qt-everywhere-opensource-src-4.8.4_prebuilt.tar.gz
+
+cd /home/user/work/qt/qt-everywhere-opensource-src-4.8.4/install
+sudo mkdir /nfsroot/qt
+sudo cp -rf lib /nfsroot/qt
+sudo cp demos/affine/affine /nfsroot
+
+sudo vim /nfsroot/qt.sh
+========================================================
+export QTDIR=/mnt/nfs/qt
+export LD_LIBRARY_PATH=$QTDIR/lib:$LD_LIBRARY_PATH
+export QWS_MOUSE_PROTO="TSLIB:/dev/input/event0"
+export QWS_KEYBOARD=TTY:/dev/tty1
+export QT_QWS_FONTDIR=/mnt/nfs/qt/lib/fonts
+export POINTERCAL_FILE=/mnt/nfs/tslib_arm/etc/pointercal
+========================================================
+
+[target]
+source /mnt/nfs/tslib.sh
+source /mnt/nfs/qt.sh
+/mnt/nfs/affine -qws
+
+<Qt Creator 설치>
+mkdir ~/work/qt/qt-creator
+mkdir ~/work/qt/qt-creator/qdemo
+
+~/res/qt/qt-creator-linux-x86-opensource-2.7.1.bin

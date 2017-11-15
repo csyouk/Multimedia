@@ -1,12 +1,9 @@
-# Multimedia, Socket programming
-## Overview
-![overview](./img/overview.gif)
+# Multimedia
 
-## Protocols
-- [Ethernet](./Ethernet-Protocol.md)
-- [TCP/UDP](./TCP_UDP-Protocol.md)
-- [IP](./IP-Protocol.md)
-- [Application Layer](./Application-Layer.md)
+**This documents are configuration for board WT4412**
 
-## Socket
-- [Socket](./socket.md)
+- [Sound](./soound-system.md)
+- [Display](./display.md)
+- [Video4Linux](./video4linux.md)
+- [Input Driver](./inputdriver.md)
+- [QT](./qt-programming.md)
