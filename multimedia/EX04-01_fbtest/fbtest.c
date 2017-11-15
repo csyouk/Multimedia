@@ -69,12 +69,17 @@ int main(void)
 
 	/* FB_NUM0: open */
 	sprintf(temp_buf, "/dev/fb%d", FB_NUM0);
+	// /dev/fb0 에 있는 내용을 열어라.
+	// 즉 프레임버퍼 0번에 있는 내용을 열어라.
+	// 어플리케이션이 장치에 접근하려고 한다.
+	// OS는 이를 변환해서 하드웨어에 대한 처리를 한다.
 	fd_fb0 = open(temp_buf, O_RDWR);
 	if(fd_fb0 == -1) {
 		app_err("cannot open %s\n", temp_buf);
 		exit(-1);
 	}
 	/* FB_NUM0: get fb_var_screeninfo */
+	// ioctl. IO를 제어 하는 함수.
 	if (ioctl(fd_fb0, FBIOGET_VSCREENINFO, &vinfo) == -1) {
 		app_err("cannot read FBIOGET_VSCREENINFO\n");
 		exit(-1);
