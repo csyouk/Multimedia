@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 {
 	int fd, ret;
 	char *dev_name;
-	struct input_event ev;	
+	struct input_event ev;
 
 	if(argc != 2) {
 		printf("%s: there is no input device\n", APP_NAME);
@@ -31,6 +31,8 @@ int main(int argc, char *argv[])
 	fflush(stdout);
 
 	for(;;) {
+		// 응용프로그램에서 이벤트를 읽어옴
+		// 입력 이벤트 드라이버로부터 이벤트를 읽어옴.
 		ret = read(fd, &ev, sizeof(struct input_event));
 		if(ret == -1) {
 			printf("%s: read error\n", APP_NAME);

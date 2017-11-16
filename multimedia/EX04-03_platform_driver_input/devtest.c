@@ -68,9 +68,13 @@ void my_work_function(struct work_struct *work)
 	iowrite32(ioread32(pad_base+GPM4DAT) | (0x3<<4), pad_base+GPM4DAT);
 
 	/* Implement code */
+  input_report_key(input, key_code, 1);
+  input_sync(input);
+  /* sleep */
+  msleep(300);
 
-	/* sleep */
-	msleep(300);
+  input_report_key(input, key_code, 0);
+  input_sync(input);
 
 	/* LED OFF */
 	iowrite32(ioread32(pad_base+GPM4DAT) & ~(0x3<<4), pad_base+GPM4DAT);
@@ -187,8 +191,13 @@ static int driver_probe(struct platform_device *pdev)
 	}
 
 	/* Implement code */
-
+	// 이 곳에 입력값을 설정한다.
 	input->name = "my_keypad";
+	set_bit(EV_SYN, input->evbit);
+  set_bit(EV_KEY, input->evbit);
+  set_bit(KEY_LEFT, input->keybit);
+  set_bit(KEY_RIGHT, input->keybit);
+
 	ret = input_register_device(input);
 	if (ret) {
 		printk("devtest: Failed to register device\n");
