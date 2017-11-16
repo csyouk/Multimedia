@@ -50,6 +50,7 @@ char *map_fb0;
 map_fb0 = (char *)mmap(0, size_fb0, PROT_READ | PROT_WRITE, MAP_SHARED, fd_fb0, 0);
 ```
 - 파일이나 장치를 메모리에 대응시키거나 푼다.
+- **프로세스와 장치**를 연결.
 - 인자
   - `start` : 0으로 세팅시, 커널이 알아서 설정하게 놔둔다는 뜻.
 - 이러한 함수가 필요한 이유는 무엇인가?

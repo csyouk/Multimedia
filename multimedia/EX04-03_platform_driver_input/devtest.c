@@ -33,7 +33,7 @@ struct dev_key_info {
 struct dev_pdata {
 	struct dev_key_info *kinfo;
 	int nkeys;
-}; 
+};
 
 struct drv_key_info {
 	struct input_dev *input;
@@ -292,4 +292,3 @@ module_init(platform_device_init);
 module_exit(platform_device_exit);
 
 MODULE_LICENSE("GPL");
-
