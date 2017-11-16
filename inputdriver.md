@@ -125,7 +125,15 @@ user@user-VirtualBox:~/work/linux-3.4.39$ make menuconfig
 - [참고 - rc.M](./multimedia/kernel/rc.M)
 - [참고 - rc.local](./multimedia/kernel/rc.local)
 - [참고 - rc.local](./multimedia/kernel/mkext2.sh)
+- **rc** 의 의미 : **run command**
 
 #### ADC
 - ADC가 10비트의 값이라는 뜻은, 아날로그 인풋을 10bit의 값으로 변환이 가능하다는 뜻이다.
 - 즉, 디지털 값으로 바꾸면, 0 ~ 0x3ff 까지의 값을 가질 수 있다.
+
+
+#### rc
+> The ‘rc’ suffix goes back to Unix's grandparent, CTSS.
+It had a command-script feature called "runcom". Early
+Unixes used ‘rc’ for the name of the operating system's
+boot script, as a tribute to CTSS runcom.
