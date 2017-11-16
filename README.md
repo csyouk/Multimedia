@@ -7,3 +7,4 @@
 - [Video4Linux](./video4linux.md)
 - [Input Driver](./inputdriver.md)
 - [QT](./qt-programming.md)
+  - [Camera & Music Application](./qt-app.md)
