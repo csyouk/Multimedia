@@ -45,7 +45,71 @@
 - 일반 어플리케이션의 Makefile과 설정방법이 매우 다르다
 
 #### 디바이스 드라이버를 커널에 포함시키는 방법.
+- `/linux-3.4.39/drivers/input`로 가면 디바이스 드라이버에 메뉴를 설정할 수 있는 파일이 있다.
+- `Kconfig`파일에 메뉴를 추가할 수 있다.
+  - `bool` : 옵션을 붙여서 커널에 붙이거나 안붙이거나 2개의 상태만 정의가능
+  - `tristate` : 옵션을 붙여서 3가지 상태로 만든다.
+  - `default` : 커널에 기본 포함.
+  - `depend on` : 의존성 파일 정의.
 
+- 예시
+  - `cp ~/work/practice/multimedia/EX04-03_platform_driver_input/devtest.c ./mykeypad.c`
+  - 명령어를 통해서 사용자가 만든 디바이스 드라이버를 커널에 포함시켰다.
+  - 다음은 Kconfig파일에 모듈을 추가한 예이다.
+```bash
+        config INPUT_MYKPAD
+          tristate "My Keypad driver"
+          help
+            test~
+```
+
+- 리눅스 디렉토리에서 들어가서 `make menuconfig` 명령어로 모듈을 커널에 포함시킬지 말지 결정.
+  - `<*>` : 커널에 포함
+  - `<M>` : 모듈로 사용
+  - `< >` : 포함시키지 않음.
+![make menuconfig-1](./img/makeconfig-1.JPG)
+![make menuconfig-2](./img/makeconfig-2.JPG)
+![make menuconfig-1](./img/makeconfig-3.JPG)
+- 변경사항이 있다면 다음과 같이 쉘에 출력된다.
+```bash
+user@user-VirtualBox:~/work/linux-3.4.39$ make menuconfig
+scripts/kconfig/mconf Kconfig
+
+
+*** End of the configuration.
+*** Execute 'make' to start the build or try 'make help'.
+
+user@user-VirtualBox:~/work/linux-3.4.39$ vi drivers/in
+infiniband/ input/
+user@user-VirtualBox:~/work/linux-3.4.39$ vi drivers/in
+infiniband/ input/
+user@user-VirtualBox:~/work/linux-3.4.39$ vi drivers/input/Makefile
+user@user-VirtualBox:~/work/linux-3.4.39$ make menuconfig
+^[[Bscripts/kconfig/mconf Kconfig
+^[[B
+
+*** End of the configuration.
+*** Execute 'make' to start the build or try 'make help'.
+```
+
+- `cat .config | grep INPUT_MYKPAD`  명령어를 통해서 모듈이 포함되었는지 확인한다.
+  - 다음은 설정이 반영된 결과이다.
+  - `CONFIG_INPUT_MYKPAD=y`
+- `vi drivers/input/Makefile`, 파일을 연 후, 컴파일된 결과를 추가한다.
+  - 다음은 추가한 구문의 예시이다.
+  - **주의**
+    - config에 추가한 내용과 동일하게 Makefile에 넣어줘야 한다.
+    - 파일이름 또한동일 하게 맞춰줘야 한다.
+  - `obj-$(CONFIG_INPUT_MYKPAD)  += mykeypad.o`
+- 설정이 끝났다면 다음 명령어를 수행한다.
+  - `make zImage`
+  - 이 명령을 사용해서, 커널을 빌드시킨다.
+  - 만약, zImage를 처음 빌드 시키는 것이라면,다음 명령을 수행한다.
+    - `make wt4412_linux_defconfig`
+  - `zImage`가 만들어졌다면 이미지를 `tftpboot`로 옮긴다.
+  - `sudo cp arch/arm/boot/zImage /tftpboot/`
+- [참고](./multimedia/kernel/Kconfig)
+- [참고](./multimedia/kernel/Makefile)
 
 #### ADC
 - ADC가 10비트의 값이라는 뜻은, 아날로그 인풋을 10bit의 값으로 변환이 가능하다는 뜻이다.
