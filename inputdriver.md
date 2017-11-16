@@ -113,8 +113,18 @@ user@user-VirtualBox:~/work/linux-3.4.39$ make menuconfig
   - `sudo cp arch/arm/boot/zImage /tftpboot/`
 - 디바이스 드라이버가 성공적으로 커널에 포함되었고, 실습보드가 부팅될 때, 이 이미지로 부팅이 되었다면, 다음 명령로 디바이스 드라이버가 제대로 잡혔는지 다음 명령어를 통해서 확인한다.
   - `cat /sys/class/input/event1/device/name`
+- 부트스크립트 수정(만약 사용자가 만든 프로그램을 부팅시킬때 실행시키고 싶다면.)
+  - `rc.loacl` 을 수정한다.
+  - `~/work/myrootfs/rootfs/etc/rc.d/rc.loacl`
+- 이미지를 다시 만드는 쉘 스크립트를 실행시킨다.
+  - `mkext2.sh`
+  - 해당 파일은 `~/work/myrootfs` 에 있다.
+
 - [참고 - Kconfig](./multimedia/kernel/Kconfig)
 - [참고 - Makefile](./multimedia/kernel/Makefile)
+- [참고 - rc.M](./multimedia/kernel/rc.M)
+- [참고 - rc.local](./multimedia/kernel/rc.local)
+- [참고 - rc.local](./multimedia/kernel/mkext2.sh)
 
 #### ADC
 - ADC가 10비트의 값이라는 뜻은, 아날로그 인풋을 10bit의 값으로 변환이 가능하다는 뜻이다.

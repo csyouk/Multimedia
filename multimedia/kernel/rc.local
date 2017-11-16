@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# /etc/rc.d/rc.local:  Local system initialization script.
+#
+
+# disables kinteractiveup and kadaptiveup blocked message
+echo 0 > /proc/sys/kernel/hung_task_timeout_secs
+
+ifconfig lo up
+# 기본 네트워크가 eth0으로 잡힌다.
+# 네트워크 카드 eth0을 192.168.10.3으로 세팅한다.
+ifconfig eth0 192.168.10.3 up
+# 보드의 /mnt/nfs를 우분투의 192.168.10.2:/nfsroot에 연결시킨다.
+mount -o nolock,rsize=2048,wsize=2048 192.168.10.2:/nfsroot /mnt/nfs
+
+mknod /dev/devtest c 241 0
+udevstart
+udevd&
+
+# inetd
+mount -t devpts devpts /dev/pts
+inetd
