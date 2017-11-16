@@ -5,6 +5,8 @@
 menu "Input device support"
 	depends on !S390 && !UML
 
+
+
 config INPUT
 	tristate "Generic input layer (needed for keyboard, mouse, ...)" if EXPERT
 	default y
@@ -24,6 +26,13 @@ config INPUT
 	  module will be called input.
 
 if INPUT
+
+# 이 부분이 새로추가된 부분.
+config INPUT_MYKPAD
+  tristate "My Keypad driver"
+  help
+    test~
+
 
 config INPUT_OF_MATRIX_KEYMAP
 	depends on USE_OF
@@ -199,4 +208,3 @@ source "drivers/input/gameport/Kconfig"
 endmenu
 
 endmenu
-

@@ -53,8 +53,8 @@
   - `depend on` : 의존성 파일 정의.
 
 - 예시
-  - `cp ~/work/practice/multimedia/EX04-03_platform_driver_input/devtest.c ./mykeypad.c`
-  - 명령어를 통해서 사용자가 만든 디바이스 드라이버를 커널에 포함시켰다.
+  - `cp ~/work/practice/multimedia/EX04-03_platform_driver_input/devtest.c ~/work/linux-3.4.39/drivers/input/mykeypad.c`
+  - 명령어를 통해서 **사용자가 만든 디바이스 드라이버를** **커널에 포함**시켰다.
   - 다음은 Kconfig파일에 모듈을 추가한 예이다.
 ```bash
         config INPUT_MYKPAD
@@ -92,10 +92,12 @@ user@user-VirtualBox:~/work/linux-3.4.39$ make menuconfig
 *** Execute 'make' to start the build or try 'make help'.
 ```
 
-- `cat .config | grep INPUT_MYKPAD`  명령어를 통해서 모듈이 포함되었는지 확인한다.
+- 명령어를 통해서 모듈이 포함되었는지 확인한다.
+- `cat .config | grep INPUT_MYKPAD`
   - 다음은 설정이 반영된 결과이다.
   - `CONFIG_INPUT_MYKPAD=y`
-- `vi drivers/input/Makefile`, 파일을 연 후, 컴파일된 결과를 추가한다.
+- 파일을 연 후, 컴파일된 결과를 추가한다.
+- `vi drivers/input/Makefile`
   - 다음은 추가한 구문의 예시이다.
   - **주의**
     - config에 추가한 내용과 동일하게 Makefile에 넣어줘야 한다.
@@ -104,12 +106,15 @@ user@user-VirtualBox:~/work/linux-3.4.39$ make menuconfig
 - 설정이 끝났다면 다음 명령어를 수행한다.
   - `make zImage`
   - 이 명령을 사용해서, 커널을 빌드시킨다.
-  - 만약, zImage를 처음 빌드 시키는 것이라면,다음 명령을 수행한다.
+  - 만약, zImage를 처음 빌드 시키는 것이라면, 다음 명령을 수행한다.
     - `make wt4412_linux_defconfig`
+    - 이 명령은 실습보드에서나 적용되는 명령이다.
   - `zImage`가 만들어졌다면 이미지를 `tftpboot`로 옮긴다.
   - `sudo cp arch/arm/boot/zImage /tftpboot/`
-- [참고](./multimedia/kernel/Kconfig)
-- [참고](./multimedia/kernel/Makefile)
+- 디바이스 드라이버가 성공적으로 커널에 포함되었고, 실습보드가 부팅될 때, 이 이미지로 부팅이 되었다면, 다음 명령로 디바이스 드라이버가 제대로 잡혔는지 다음 명령어를 통해서 확인한다.
+  - `cat /sys/class/input/event1/device/name`
+- [참고 - Kconfig](./multimedia/kernel/Kconfig)
+- [참고 - Makefile](./multimedia/kernel/Makefile)
 
 #### ADC
 - ADC가 10비트의 값이라는 뜻은, 아날로그 인풋을 10bit의 값으로 변환이 가능하다는 뜻이다.
