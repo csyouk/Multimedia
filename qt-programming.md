@@ -10,3 +10,9 @@
 
 #### affine
 - 아핀 공간
+
+#### QT 참고 사이트
+- [korone](http://www.korone.net/)
+- [Ubuntu-wiki-QT](https://wiki.ubuntu-kr.org/index.php/GUI(QT)_Programming)
+- [QT getting started](http://doc.qt.io/qt-4.8/gettingstartedqt.html)
+- [youtube 강의](https://www.youtube.com/playlist?list=PL2D1942A4688E9D63)
