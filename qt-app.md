@@ -27,9 +27,9 @@ source qt.sh
 ~/work/qt/qt-creator
 ```
 
+##### QT의 이미지 자원은 BMP, JPG만 렌더링이 가능하다.
 
-
-## QT의 signal-slot system
+## QT의 signal/slot system
 - 시그널/슬롯 시스템은 오브젝트간 통신을 위해 사용된다.
 - `QObject`를 상속받은 모든 클래스에서 이러한 방식을 사용할 수 있다.
 - 보통, 오브젝트간 통신에 사용되는 가장 일반적인 방법은 **콜백**을 사용하는 것이다.
