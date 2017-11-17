@@ -1,10 +1,14 @@
 # Qt App
 
+
 - 우분투에서 실행시킬시, 실행파일 경로를 환경변수에 추가시킨다.
 
 ```bash
 PATH=$PATH::/home/user/qtcreator-2.7.1/bin
 ```
+- 우분투에서 작업이끝났다면, 실행파일은 보드로 이동시킨다.
+  - `cd ~/work/qt/qt-creator/qdemo/build-qdemo-qt_embedded-Debug`
+  - `sudo cp qdemo /nfsroot`
 
 - 보드에서 실행시킬 시, 터치스크린 라이브러리와 qt라이브러리의 환경변수를 세팅하는 작업을 보드 부팅시 1회 진행한다.
 
