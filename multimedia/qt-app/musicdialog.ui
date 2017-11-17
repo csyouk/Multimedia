@@ -42,21 +42,35 @@
   <widget class="QPushButton" name="playButton">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>150</y>
-     <width>80</width>
-     <height>26</height>
+     <x>30</x>
+     <y>120</y>
+     <width>121</width>
+     <height>131</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">#playButton
+{
+	background-image:url(:/images/images/button_blue_play.png);
+}
+#playButton:pressed
+{ 
+	background-image:url(:/images/images/button_grey_play.png);
+}
+#playButton:disabled
+{
+	background-image:url(:/images/images/button_grey_play.png);
+}</string>
+   </property>
    <property name="text">
-    <string>Play</string>
+    <string/>
    </property>
   </widget>
   <widget class="QPushButton" name="pauseButton">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>150</y>
+     <x>180</x>
+     <y>120</y>
      <width>80</width>
      <height>26</height>
     </rect>
@@ -68,8 +82,8 @@
   <widget class="QPushButton" name="stopButton">
    <property name="geometry">
     <rect>
-     <x>260</x>
-     <y>150</y>
+     <x>290</x>
+     <y>120</y>
      <width>80</width>
      <height>26</height>
     </rect>
@@ -81,8 +95,8 @@
   <widget class="QPushButton" name="exitButton">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>250</y>
+     <x>290</x>
+     <y>220</y>
      <width>80</width>
      <height>26</height>
     </rect>

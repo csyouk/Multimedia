@@ -313,6 +313,7 @@ static void process_image(const void *p, int size)
 		if(capture_flag) {
 			debug_print("[%s:%d->%s()]\n", __FILE__, __LINE__, __FUNCTION__);
 			capture_flag = 0;
+			// capture된 이미지를 파일로 바꾼다.
 			capture_to_file(p, size, cmd_str+2);
 			printf("OK\n");
 			sleep(1);

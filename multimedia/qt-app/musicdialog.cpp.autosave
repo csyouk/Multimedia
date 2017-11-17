@@ -23,6 +23,7 @@ MusicDialog::MusicDialog(QWidget *parent) :
 
     musicThread = new MusicThread();
 
+         // target,      target SIGNAL function,   sender,  sender handler function   
     connect(musicThread, SIGNAL(sendCommand(int)), this, SLOT(handleCommand(int)));
     musicThread->start();
 }

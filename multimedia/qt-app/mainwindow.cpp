@@ -8,6 +8,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    codec = QTextCodec::codecForName("UTF8");
+    ui->cameraButton->setText(codec->toUnicode("카메라"));
+    ui->musicButton->setText(codec->toUnicode("뮤직"));
+
 }
 
 MainWindow::~MainWindow()

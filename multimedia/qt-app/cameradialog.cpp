@@ -1,7 +1,13 @@
 #include "cameradialog.h"
 #include "ui_cameradialog.h"
 #include <stdio.h>
+/* Camera Dialog의 구조
+  parent process        child process
+  qdemo --- | pipe | --> v4l2test
+  qdemo <-- | pipe | --- v4l2test
 
+  코드를 제대로 이해하기 위해서 v4l2test를 같이 본다.
+*/
 CameraDialog::CameraDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::CameraDialog)
@@ -58,13 +64,12 @@ void CameraDialog::on_captureButton_clicked()
     fflush(stdout);
 
     write(fd_pipe_stdin[1], str, strlen(str));
-    printf("write done");
     read(fd_pipe_stdout[0], str, 64);
-    printf("read done\n");
     printf("recv : %s\n", str);
     fflush(stdout);
 
-    sprintf(cmd, "./v4l2test -d /dev/video5 -c 70000 -b /dev/fb0 -x %d -y %d -a 3 -n %s", xpos[capture_count%4], ypos[capture_count%4], fname);
+    sprintf(cmd, "./v4l2test -d /dev/video5 -c 70000 -b /dev/fb0 -x %d -y %d -a 3 -n %s",
+    xpos[capture_count % 4], ypos[capture_count % 4], fname);
     system(cmd);
     capture_count++;
 }

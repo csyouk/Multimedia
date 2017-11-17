@@ -10,10 +10,11 @@ PATH=$PATH::/home/user/qtcreator-2.7.1/bin
   - `cd ~/work/qt/qt-creator/qdemo/build-qdemo-qt_embedded-Debug`
   - `sudo cp qdemo /nfsroot`
 
-- 보드에서 실행시킬 시, 터치스크린 라이브러리와 qt라이브러리의 환경변수를 세팅하는 작업을 보드 부팅시 1회 진행한다.
+- 보드에서 실행시킬 시, 터치스크린 라이브러리와 qt라이브러리, alsa라이브러리의 환경변수를 세팅하는 작업을 보드 부팅시 1회 진행한다.
 
 ```bash
 cd /mnt/nfs
+source alsa.sh
 source tslib.sh
 source qt.sh
 # qt 실행
@@ -53,6 +54,8 @@ source qt.sh
 > All classes that inherit from QObject or one of its subclasses (e.g., QWidget) can contain signals and slots. **Signals are emitted by objects when they change their state in a way that may be interesting to other objects.** This is all the object does to communicate. It does not know or care whether anything is receiving the signals it emits. This is true information encapsulation, and ensures that the object can be used as a software component.
 - `QObject`로부터 상속을 받은 클래스들은 signal과 slot 메소드를 가지고 있다.(예를 들면 `QWidget`) 객체가 상태를 바꾸면서 방출한 시그널은 다른 객체한테 영향을 끼치게 된다. 객체는 이러한 방식으로 통신을 한다.
 
+#### Tightly Coupled VS Loosely Coupled
+- [강한 결합, 약한 결합](http://www.codesuggestions.com/java/tight-coupling-and-loose-coupling-between-java-objects/)
 
 #### QT
 - moc파일은 빌드 파일이다.

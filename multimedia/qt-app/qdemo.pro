@@ -26,3 +26,6 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
     musicdialog.ui \
     cameradialog.ui
+
+RESOURCES += \
+    MyResource.qrc
