@@ -27,7 +27,15 @@ source qt.sh
 ~/work/qt/qt-creator
 ```
 
-##### QT의 이미지 자원은 BMP, JPG만 렌더링이 가능하다.
+##### QT의 이미지 자원은 BMP, PNG만 렌더링이 가능하다.
+- **url : uniform resource locator**
+  - 리소스의 위치를 나타내는 것.
+- **urn : uniform resource name**
+  - 리소스의 이름 그 자체를 유일한 식별자로써 사용하는 방식
+- **uri : uniform resource identifier**
+  - 모든 정보의 리소스를 가리키는 식별자.
+- QT의 리소스 적용방식은 **Cascading**방식을 따른다.
+- QT는 `qrc`방식을 통해서 자원(=이미지, 비디오, 음악 등.)을 관리한다.
 
 ## QT의 signal/slot system
 - 시그널/슬롯 시스템은 오브젝트간 통신을 위해 사용된다.
