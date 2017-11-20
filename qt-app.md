@@ -4,7 +4,13 @@
 - 우분투에서 실행시킬시, 실행파일 경로를 환경변수에 추가시킨다.
 
 ```bash
+# 다음을 bash_profile 에 추가해야 함.
 PATH=$PATH::/home/user/qtcreator-2.7.1/bin
+
+# shell로 빠져나와서 다음 명령어를 실행
+source ~/.bash_profile
+## shell 에서  다음 명령어 실행
+qtcreator
 ```
 - 우분투에서 작업이끝났다면, 실행파일은 보드로 이동시킨다.
   - `cd ~/work/qt/qt-creator/qdemo/build-qdemo-qt_embedded-Debug`
