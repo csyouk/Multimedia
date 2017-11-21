@@ -108,8 +108,12 @@ void *comm_thread(void *arg)
 			case 'e':
 			finish_flag = 1;
 			break;
-			default:
+			case 'p':
+			pause_flag = 1;
+			case 'r':
+			resume_flag = 1;
 			break;
+			default:
 		}
 	}
 }
@@ -428,6 +432,17 @@ static void mainloop(void)
 				break;
 			}
 
+			if(pause_flag){
+				stop_capturing();
+				pause_flag = 0;
+
+			}
+
+			if(resume_flag){
+				start_capturing();
+				resume_flag = 0;
+			}
+
 			FD_ZERO(&fds);
 			FD_SET(fd, &fds);
 
@@ -470,10 +485,11 @@ static void stop_capturing(void)
 
 		case IO_METHOD_MMAP:
 		case IO_METHOD_USERPTR:
-		type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-		if (-1 == xioctl(fd, VIDIOC_STREAMOFF, &type))
-		errno_exit("VIDIOC_STREAMOFF");
-		break;
+			type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+			if (-1 == xioctl(fd, VIDIOC_STREAMOFF, &type)){
+				errno_exit("VIDIOC_STREAMOFF");
+			}
+			break;
 	}
 }
 
