@@ -8,7 +8,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QIcon>
-
+#include <QDir>
 
 
 GalleryDialog::GalleryDialog(QWidget *parent) :
@@ -22,14 +22,28 @@ GalleryDialog::GalleryDialog(QWidget *parent) :
     btns[1] = ui->img2;
     btns[2] = ui->img3;
     btns[3] = ui->img4;
-    Initialize(page * PAGE_WEIGHT + index);
+    QString path = CAM_PATH;
+
+    QDir dir( path );
+
+    dir.setFilter( QDir::AllEntries | QDir::NoDotAndDotDot );
+
+    last_page = dir.count()/PAGE_WIDTH;
+
+    Initialize(page * PAGE_WIDTH + index);
 }
 
 void GalleryDialog::Initialize(int index){
     char file[256];
+    char pages[8];
+
+    sprintf(pages, "[%d / %d]", this->page, this->last_page);
+    ui->page->setText(pages);
+    ui->page->setStyleSheet("font-size:20px");
+
     for(int i=0; i < 4; i++){
         sprintf(file, CAM_N_PATH, index+i);
-        qDebug() << "index : " << index+i << endl;
+        qDebug() << "index : " << index+i ;
         QString yuv422File(file);
         QFile File(yuv422File);
         if(!File.open(QIODevice::ReadOnly))
@@ -62,42 +76,44 @@ GalleryDialog::~GalleryDialog()
 
 void GalleryDialog::on_leftButton_clicked()
 {
+    if(page == 0) return;
     page--;
-    Initialize(page * PAGE_WEIGHT + index);
+    Initialize(page * PAGE_WIDTH + index);
 }
 
 void GalleryDialog::on_rightButton_clicked()
 {
+    if(page == last_page) return;
     page++;
-    Initialize(page * PAGE_WEIGHT + index);
+    Initialize(page * PAGE_WIDTH + index);
 }
 
 
 
 void GalleryDialog::on_img1_clicked()
 {
-    APP_CONFIG::index = this->page * PAGE_WEIGHT + IMG_1;
+    APP_CONFIG::index = this->page * PAGE_WIDTH + IMG_1;
     SingleImgDialog dig;
     dig.exec();
 }
 
 void GalleryDialog::on_img2_clicked()
 {
-    APP_CONFIG::index = this->page * PAGE_WEIGHT + IMG_2;
+    APP_CONFIG::index = this->page * PAGE_WIDTH + IMG_2;
     SingleImgDialog dig;
     dig.exec();
 }
 
 void GalleryDialog::on_img3_clicked()
 {
-    APP_CONFIG::index = this->page * PAGE_WEIGHT + IMG_3;
+    APP_CONFIG::index = this->page * PAGE_WIDTH + IMG_3;
     SingleImgDialog dig;
     dig.exec();
 }
 
 void GalleryDialog::on_img4_clicked()
 {
-    APP_CONFIG::index = this->page * PAGE_WEIGHT + IMG_4;
+    APP_CONFIG::index = this->page * PAGE_WIDTH + IMG_4;
     SingleImgDialog dig;
     dig.exec();
 }

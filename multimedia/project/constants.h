@@ -10,7 +10,7 @@
 
 #define OPEN_FILE_ERROR "Open File Failed.\n"
 
-#define PAGE_WEIGHT 4
+#define PAGE_WIDTH 4
 
 #define NTHUMBNAILS 8
 

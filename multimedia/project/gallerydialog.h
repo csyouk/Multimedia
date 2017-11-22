@@ -13,6 +13,7 @@ class GalleryDialog : public QDialog
 private:
     int index;
     int page;
+    int last_page;
     QPushButton * btns[4];
     void Initialize(int);
 public:
