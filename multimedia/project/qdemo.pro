@@ -15,15 +15,23 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     cameradialog.cpp \
-    gallerydialog.cpp
+    gallerydialog.cpp \
+    singleimgdialog.cpp \
+    constants.cpp \
+    converter.cpp
 
 HEADERS  += mainwindow.h \
     cameradialog.h \
-    gallerydialog.h
+    gallerydialog.h \
+    converter.h \
+    converter.h \
+    singleimgdialog.h \
+    constants.h
 
 FORMS    += mainwindow.ui \
     cameradialog.ui \
-    gallerydialog.ui
+    gallerydialog.ui \
+    singleimgdialog.ui
 
 RESOURCES += \
     MyResource.qrc

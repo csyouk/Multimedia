@@ -1,8 +1,10 @@
 #include "cameradialog.h"
 #include "ui_cameradialog.h"
+#include "gallerydialog.h"
+#include "constants.h"
 #include <stdio.h>
-
-#define NTHUMBNAILS 8
+#include <QDir>
+#include <QDebug>
 
 CameraDialog::CameraDialog(QWidget *parent) :
     QDialog(parent),
@@ -12,6 +14,7 @@ CameraDialog::CameraDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::Window|Qt::FramelessWindowHint);
     run_v4l2();
+    update_capture_count();
 }
 
 
@@ -26,6 +29,20 @@ void CameraDialog::on_exitButton_clicked()
     write(fd_pipe_stdin[1], "e\n", 2);
     sleep(1);
     close();
+}
+
+void CameraDialog::update_capture_count(void)
+{
+    QString path = CAM_PATH;
+
+    QDir dir( path );
+
+    dir.setFilter( QDir::AllEntries | QDir::NoDotAndDotDot );
+
+    int total_files = dir.count();
+
+    qDebug() << "total files in " << CAM_PATH << " " << total_files << endl;
+    capture_count = total_files;
 }
 
 void CameraDialog::run_v4l2(void){
@@ -76,27 +93,18 @@ void CameraDialog::on_captureButton_clicked()
 
     sprintf(cmd, "./v4l2test -d /dev/video5 -c 70000 -b /dev/fb0 -x %d -y %d -a 3 -n %s", xpos[capture_count%NTHUMBNAILS], ypos[capture_count%NTHUMBNAILS], fname);
     system(cmd);
+    capture_count++;
 
-    write(fd_pipe_stdin[1],"e\n",2);
-    sleep(1);
-
-    sprintf(cmd,"./conv_bmp -s 640x480 -o ./cam/CAM%04d -d /dev/video5 -f jpeg",capture_count++);
-    system(cmd);
-    CameraDialog::run_v4l2();
 }
 
 void CameraDialog::on_galleryButton_clicked()
 {
-
-
+    write(fd_pipe_stdin[1],"e\n",2);
+    GalleryDialog dig;
+    dig.exec();
 }
 
-
-
-
-
-
-
-
-
-
+void CameraDialog::on_runButton_clicked()
+{
+    CameraDialog::run_v4l2();
+}

@@ -14,6 +14,7 @@ private:
     int fd_pipe_stdin[2];
     int fd_pipe_stdout[2];
     int capture_count;
+    void update_capture_count(void);
 
 public:
     explicit CameraDialog(QWidget *parent = 0);
@@ -26,6 +27,8 @@ private slots:
     void on_captureButton_clicked();
 
     void on_galleryButton_clicked();
+
+    void on_runButton_clicked();
 
 private:
     Ui::CameraDialog *ui;

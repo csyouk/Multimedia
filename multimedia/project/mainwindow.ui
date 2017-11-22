@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>179</y>
+      <y>-11</y>
       <width>1024</width>
-      <height>421</height>
+      <height>611</height>
      </rect>
     </property>
     <property name="font">
@@ -30,32 +30,6 @@
     </property>
     <property name="text">
      <string>CAMERA</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="test">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>711</width>
-      <height>481</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="nextButton">
-    <property name="geometry">
-     <rect>
-      <x>829</x>
-      <y>120</y>
-      <width>131</width>
-      <height>101</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
     </property>
    </widget>
   </widget>

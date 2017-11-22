@@ -48,6 +48,24 @@
      </widget>
     </item>
     <item>
+     <widget class="QPushButton" name="runButton">
+      <property name="maximumSize">
+       <size>
+        <width>513</width>
+        <height>100000</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>30</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Run Cam</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QPushButton" name="galleryButton">
       <property name="maximumSize">
        <size>
@@ -84,19 +102,6 @@
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QLabel" name="myLabel">
-   <property name="geometry">
-    <rect>
-     <x>940</x>
-     <y>330</y>
-     <width>58</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
   </widget>
  </widget>
  <resources/>
