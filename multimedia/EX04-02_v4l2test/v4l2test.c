@@ -336,7 +336,7 @@ static int read_frame(void)
 		if (-1 == read(fd, buffers[0].start, buffers[0].length)) {
 			switch (errno) {
 				case EAGAIN:
-					return 0;
+				return 0;
 				case EIO:
 				/* Could ignore EIO, see spec. */
 				/* fall through */
@@ -349,59 +349,59 @@ static int read_frame(void)
 		break;
 
 		case IO_METHOD_MMAP:
-			CLEAR(buf);
+		CLEAR(buf);
 
-			buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-			buf.memory = V4L2_MEMORY_MMAP;
+		buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+		buf.memory = V4L2_MEMORY_MMAP;
 
-			if (-1 == xioctl(fd, VIDIOC_DQBUF, &buf)) {
-				switch (errno) {
-					case EAGAIN:
-					return 0;
+		if (-1 == xioctl(fd, VIDIOC_DQBUF, &buf)) {
+			switch (errno) {
+				case EAGAIN:
+				return 0;
 
-					case EIO:
-					/* Could ignore EIO, see spec. */
+				case EIO:
+				/* Could ignore EIO, see spec. */
 
-					/* fall through */
+				/* fall through */
 
-					default:
-					errno_exit("VIDIOC_DQBUF");
-				}
+				default:
+				errno_exit("VIDIOC_DQBUF");
 			}
+		}
 
-			assert(buf.index < n_buffers);
+		assert(buf.index < n_buffers);
 
-			process_image(buffers[buf.index].start, buf.bytesused);
+		process_image(buffers[buf.index].start, buf.bytesused);
 
-			if (-1 == xioctl(fd, VIDIOC_QBUF, &buf))
-			errno_exit("VIDIOC_QBUF");
-			break;
+		if (-1 == xioctl(fd, VIDIOC_QBUF, &buf))
+		errno_exit("VIDIOC_QBUF");
+		break;
 
 		case IO_METHOD_USERPTR:
-			CLEAR(buf);
+		CLEAR(buf);
 
-			buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-			buf.memory = V4L2_MEMORY_USERPTR;
+		buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+		buf.memory = V4L2_MEMORY_USERPTR;
 
-			if (-1 == xioctl(fd, VIDIOC_DQBUF, &buf)) {
-				switch (errno) {
-					case EAGAIN:
-					return 0;
+		if (-1 == xioctl(fd, VIDIOC_DQBUF, &buf)) {
+			switch (errno) {
+				case EAGAIN:
+				return 0;
 
-					case EIO:
-					/* Could ignore EIO, see spec. */
+				case EIO:
+				/* Could ignore EIO, see spec. */
 
-					/* fall through */
+				/* fall through */
 
-					default:
-					errno_exit("VIDIOC_DQBUF");
-				}
+				default:
+				errno_exit("VIDIOC_DQBUF");
 			}
+		}
 
-			for (i = 0; i < n_buffers; ++i)
-			if (buf.m.userptr == (unsigned long)buffers[i].start
-			&& buf.length == buffers[i].length)
-			break;
+		for (i = 0; i < n_buffers; ++i)
+		if (buf.m.userptr == (unsigned long)buffers[i].start
+		&& buf.length == buffers[i].length)
+		break;
 
 		assert(i < n_buffers);
 
@@ -481,15 +481,15 @@ static void stop_capturing(void)
 	switch (io) {
 		case IO_METHOD_READ:
 		/* Nothing to do. */
-			break;
+		break;
 
 		case IO_METHOD_MMAP:
 		case IO_METHOD_USERPTR:
-			type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-			if (-1 == xioctl(fd, VIDIOC_STREAMOFF, &type)){
-				errno_exit("VIDIOC_STREAMOFF");
-			}
-			break;
+		type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+		if (-1 == xioctl(fd, VIDIOC_STREAMOFF, &type)){
+			errno_exit("VIDIOC_STREAMOFF");
+		}
+		break;
 	}
 }
 
@@ -500,8 +500,8 @@ static void start_capturing(void)
 
 	switch (io) {
 		case IO_METHOD_READ:
-			/* Nothing to do. */
-			break;
+		/* Nothing to do. */
+		break;
 
 		case IO_METHOD_MMAP:
 		for (i = 0; i < n_buffers; ++i) {
@@ -513,12 +513,12 @@ static void start_capturing(void)
 			buf.index = i;
 
 			if (-1 == xioctl(fd, VIDIOC_QBUF, &buf))
-				errno_exit("VIDIOC_QBUF");
+			errno_exit("VIDIOC_QBUF");
 		}
 		type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 		// 정해놓은 버퍼에 캡처를 시작해라.
 		if (-1 == xioctl(fd, VIDIOC_STREAMON, &type))
-			errno_exit("VIDIOC_STREAMON");
+		errno_exit("VIDIOC_STREAMON");
 		break;
 
 		case IO_METHOD_USERPTR:
@@ -634,7 +634,7 @@ static void init_mmap(void)
 		buf.index       = n_buffers;
 
 		if (-1 == xioctl(fd, VIDIOC_QUERYBUF, &buf))
-			errno_exit("VIDIOC_QUERYBUF");
+		errno_exit("VIDIOC_QUERYBUF");
 
 		// 만들어진 버퍼에 어플리케이션이 LCD를 사용할 수 있도록 메모리 정보를 매핑시킴.
 		buffers[n_buffers].length = buf.length;
@@ -646,7 +646,7 @@ static void init_mmap(void)
 			fd, buf.m.offset);
 
 			if (MAP_FAILED == buffers[n_buffers].start)
-				errno_exit("mmap");
+			errno_exit("mmap");
 		}
 	}
 
