@@ -18,8 +18,19 @@ public:
 private slots:
     void on_exitButton_clicked();
 
+    void on_rslider_sliderMoved(int position);
+
+protected:
+//    void mouseMoveEvent(QMouseEvent *);
+    void mousePressEvent(QMouseEvent *);
+    void mouseReleaseEvent(QMouseEvent *);
+
 private:
+    QPoint pressPos;
+    QPoint releasePos;
+    char format[10];
     Ui::SingleImgDialog *ui;
+    void changeImg(void);
 };
 
 #endif // SINGLEIMGDIALOG_H

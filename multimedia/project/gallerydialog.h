@@ -15,16 +15,17 @@ private:
     int page;
     int last_page;
     QPushButton * btns[4];
+
     void Initialize(int);
+
+
 public:
     explicit GalleryDialog(QWidget *parent = 0);
     ~GalleryDialog();
     
 private slots:
     void on_exitButton_clicked();
-
     void on_rightButton_clicked();
-
     void on_leftButton_clicked();
 
     void on_img1_clicked();

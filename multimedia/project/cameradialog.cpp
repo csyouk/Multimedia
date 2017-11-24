@@ -5,13 +5,15 @@
 #include <stdio.h>
 #include <QDir>
 #include <QDebug>
+#include <QMouseEvent>
 
 CameraDialog::CameraDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::CameraDialog)
 {
-    capture_count = 0;
     ui->setupUi(this);
+
+    capture_count = 0;
     this->setWindowFlags(Qt::Window|Qt::FramelessWindowHint);
     run_v4l2();
     update_capture_count();
@@ -100,6 +102,7 @@ void CameraDialog::on_captureButton_clicked()
 void CameraDialog::on_galleryButton_clicked()
 {
     write(fd_pipe_stdin[1],"e\n",2);
+     sleep(1);
     GalleryDialog dig;
     dig.exec();
 }
@@ -108,3 +111,5 @@ void CameraDialog::on_runButton_clicked()
 {
     CameraDialog::run_v4l2();
 }
+
+

@@ -10,34 +10,32 @@
 #include <QIcon>
 #include <QDir>
 
-
 GalleryDialog::GalleryDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::GalleryDialog)
 {
     ui->setupUi(this);
+
     index = 0;
     page = 0;
     btns[0] = ui->img1;
     btns[1] = ui->img2;
     btns[2] = ui->img3;
     btns[3] = ui->img4;
-    QString path = CAM_PATH;
-
-    QDir dir( path );
-
+    QDir dir( (QString)CAM_PATH );
     dir.setFilter( QDir::AllEntries | QDir::NoDotAndDotDot );
-
+    APP_CONFIG::last = dir.count() - 1;
     last_page = dir.count()/PAGE_WIDTH;
-
     Initialize(page * PAGE_WIDTH + index);
 }
 
+
 void GalleryDialog::Initialize(int index){
     char file[256];
-    char pages[8];
+    char pages[10];
 
     sprintf(pages, "[%d / %d]", this->page, this->last_page);
+    qDebug() << pages;
     ui->page->setText(pages);
     ui->page->setStyleSheet("font-size:20px");
 
@@ -72,7 +70,6 @@ GalleryDialog::~GalleryDialog()
 {
     delete ui;
 }
-
 
 void GalleryDialog::on_leftButton_clicked()
 {

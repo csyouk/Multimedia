@@ -14,8 +14,14 @@
 
 #define NTHUMBNAILS 8
 
+#define SWIPE_THRESHOLD 100
+
+#define MAX_UINT (unsigned int)(1<<31)
+
 namespace APP_CONFIG{
     extern unsigned int index;
+    extern unsigned int last;
+    extern const unsigned int first;
 }
 
 enum IMG_INDEX{IMG_1, IMG_2, IMG_3, IMG_4};
