@@ -51,9 +51,9 @@ void GalleryDialog::Initialize(int index){
         }
         QByteArray array=File.readAll();
 
-        convert_to_rgb32(array.data(), 1);
+        yuv422_to_rgb32(array.data(), 1);
 
-        QImage img((unsigned char *)rgb32,CAM_W,CAM_H,QImage::Format_RGB32);
+        QImage img((unsigned char *)RGB32,CAM_W,CAM_H,QImage::Format_RGB32);
         QIcon icon(QPixmap::fromImage(img));
         btns[i]->setIcon(icon);
         btns[i]->setIconSize(QSize(427,247));

@@ -2,6 +2,7 @@
 #define SINGLEIMGDIALOG_H
 
 #include <QDialog>
+#include "constants.h"
 
 namespace Ui {
 class SingleImgDialog;
@@ -20,6 +21,24 @@ private slots:
 
     void on_rslider_sliderMoved(int position);
 
+    void on_resetButton_clicked();
+
+    void on_gslider_sliderMoved(int position);
+
+    void on_bslider_sliderMoved(int position);
+
+    void on_gslider_valueChanged(int value);
+
+    void on_rslider_valueChanged(int value);
+
+    void on_bslider_valueChanged(int value);
+
+    void on_alphaSlider_sliderMoved(int position);
+
+    void on_alphaSlider_valueChanged(int value);
+
+    void on_screenshotButton_clicked();
+
 protected:
 //    void mouseMoveEvent(QMouseEvent *);
     void mousePressEvent(QMouseEvent *);
@@ -29,8 +48,9 @@ private:
     QPoint pressPos;
     QPoint releasePos;
     char format[10];
+    Pixel p;
     Ui::SingleImgDialog *ui;
-    void changeImg(void);
+    void changeImg(Pixel &);
 };
 
 #endif // SINGLEIMGDIALOG_H
